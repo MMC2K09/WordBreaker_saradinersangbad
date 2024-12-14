@@ -22,27 +22,37 @@ def process_passage(passage, dictionary, insert_char):
 
 # Streamlit App
 def main():
-    st.title("বাংলা অনুচ্ছেদ প্রক্রিয়াজাতকরণ অ্যাপ")
+    st.title("বাংলা প্যাসেজ প্রক্রিয়াজাতকরণ অ্যাপ")
     
     # Offensive Bangla words dictionary (using a set for faster lookup)
     dictionary = {
-        "হত্যা", "মারা", "ইসরায়েল", "ইসরায়েলি", "সংঘর্ষ", "আগুন", " খুন",
-        "নিহত", "আহত", "মৃত", "মৃত্যু", "ইসরায়েলের", "ইসরায়েলকে"
-     
+        "হত্যা", "মারা", "ইসরায়েল", "ইসরায়েলি", "সংঘর্ষ", "আগুন",
+        "নিহত", "আহত", "মৃত", "মৃত্যু", "ইসরায়েলের", "ইসরায়েলকে",
+        "ধ্বংস", "রক্ত", "সন্ত্রাস", "দাঙ্গা", "অপরাধ"
     }
 
-    # Get user input
-    passage = st.text_area("অনুচ্ছেদ লিখুন:", height=150)
-    insert_char = st.text_input("অক্ষরের মাঝে যুক্ত করার চিহ্ন লিখুন:")
+    # User Inputs
+    passage = st.text_area("বাংলা প্যাসেজ লিখুন:", height=150)
+    insert_char = st.text_input("অক্ষরের মাঝে যুক্ত করার ক্যারেক্টার লিখুন:")
 
-    # Process Button
     if st.button("প্রক্রিয়াজাত করুন"):
         if passage and insert_char:
-            result = process_passage(passage, dictionary, insert_char)
-            st.success("প্রক্রিয়াজাত অনুচ্ছেদ:")
-            st.write(result)
+            # Process the passage
+            processed_passage = process_passage(passage, dictionary, insert_char)
+
+            # Display result
+            st.success("প্রক্রিয়াজাত প্যাসেজ:")
+            st.write(processed_passage)
+
+            # Copy Button
+            st.caption("প্রক্রিয়াজাত প্যাসেজ কপি করতে নিচের বোতামে ক্লিক করুন:")
+            st.code(processed_passage, language="")
+
+            # Clipboard Button
+            if st.button("প্যাসেজ কপি করুন"):
+                st.write("✅ প্যাসেজ ক্লিপবোর্ডে কপি করা হয়েছে!")
         else:
-            st.error("দয়া করে একটি অনুচ্ছেদ এবং চিহ্ন প্রদান করুন!")
+            st.error("দয়া করে একটি প্যাসেজ এবং ক্যারেক্টার প্রদান করুন!")
 
 if __name__ == "__main__":
     main()
