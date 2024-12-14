@@ -44,14 +44,25 @@ def main():
             st.success("প্রক্রিয়াজাত প্যাসেজ:")
             st.write(processed_passage)
 
-            # Add Copy Button (with JavaScript)
-            st.markdown(
+            # Add Copy Button (HTML + JS)
+            st.components.v1.html(
                 f"""
-                <button onclick="navigator.clipboard.writeText('{processed_passage}')">
-                    Copy Processed Passage
-                </button>
+                <div>
+                    <textarea id="copyText" style="display:none;">{processed_passage}</textarea>
+                    <button onclick="copyToClipboard()">Copy Processed Passage</button>
+                </div>
+                <script>
+                    function copyToClipboard() {{
+                        var copyText = document.getElementById("copyText");
+                        copyText.style.display = "block";
+                        copyText.select();
+                        document.execCommand("copy");
+                        copyText.style.display = "none";
+                        alert("Processed passage copied to clipboard!");
+                    }}
+                </script>
                 """,
-                unsafe_allow_html=True,
+                height=50,
             )
         else:
             st.error("দয়া করে একটি প্যাসেজ এবং ক্যারেক্টার প্রদান করুন!")
