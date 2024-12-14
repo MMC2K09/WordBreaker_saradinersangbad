@@ -44,13 +44,15 @@ def main():
             st.success("প্রক্রিয়াজাত প্যাসেজ:")
             st.write(processed_passage)
 
-            # Copy Button
-            st.caption("প্রক্রিয়াজাত প্যাসেজ কপি করতে নিচের বোতামে ক্লিক করুন:")
-            st.code(processed_passage, language="")
-
-            # Clipboard Button
-            if st.button("প্যাসেজ কপি করুন"):
-                st.write("✅ প্যাসেজ ক্লিপবোর্ডে কপি করা হয়েছে!")
+            # Add Copy Button (with JavaScript)
+            st.markdown(
+                f"""
+                <button onclick="navigator.clipboard.writeText('{processed_passage}')">
+                    Copy Processed Passage
+                </button>
+                """,
+                unsafe_allow_html=True,
+            )
         else:
             st.error("দয়া করে একটি প্যাসেজ এবং ক্যারেক্টার প্রদান করুন!")
 
