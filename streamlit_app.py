@@ -30,55 +30,56 @@ def process_passage(passage, dictionary, insert_char):
 
 # Streamlit App
 def main():
-    st.title("Passage Processor with Analytics")
-    st.write("Insert characters into dictionary words and analyze your input!")
+    st.title("প্যাসেজ প্রক্রিয়াকরণ এবং বিশ্লেষণ")
+    st.write("ডিকশনারি শব্দের মধ্যে অক্ষর ঢোকান এবং আপনার ইনপুট বিশ্লেষণ করুন।")
 
     # Load the dictionary
     dictionary = load_dictionary()
 
     # User input for the passage
-    passage = st.text_area("Enter your Bangla passage:")
+    passage = st.text_area("বাংলা প্যাসেজ লিখুন:")
 
     # User input for the character to insert
-    insert_char = st.text_input("Character to insert between letters:")
+    insert_char = st.text_input("অক্ষরের মাঝে যুক্ত করার ক্যারেক্টার লিখুন:")
 
-    if st.button("Process Passage"):
+    if st.button("প্রক্রিয়াকরণ শুরু করুন"):
         if not passage.strip():
-            st.warning("Please enter a passage.")
+            st.warning("অনুগ্রহ করে একটি প্যাসেজ লিখুন।")
         elif not insert_char.strip():
-            st.warning("Please enter a character to insert.")
+            st.warning("অনুগ্রহ করে একটি ক্যারেক্টার লিখুন।")
         else:
             # Process the passage
             processed_passage, matches = process_passage(passage, dictionary, insert_char)
 
-            # Display processed passage
-            st.subheader("Processed Passage")
-            st.code(processed_passage, language="text")
+            # Display processed passage as an editable text area
+            st.subheader("প্রক্রিয়াজাত প্যাসেজ (এডিট করুন)")
+            editable_passage = st.text_area("এখানে প্রক্রিয়াজাত প্যাসেজ দেখুন এবং সম্পাদনা করুন:", 
+                                            value=processed_passage, height=200)
 
-            # Copy button (Fixed)
-            st.caption("Click the button below to copy the processed passage:")
+            # Copy button
+            st.caption("নিচের বোতামে ক্লিক করে প্রক্রিয়াজাত প্যাসেজ কপি করুন:")
             copy_code = f"""
             <script>
                 function copyToClipboard(text) {{
                     navigator.clipboard.writeText(text).then(() => {{
-                        alert("Copied to clipboard!");
+                        alert("ক্লিপবোর্ডে কপি করা হয়েছে!");
                     }}).catch(err => {{
-                        console.error("Error copying to clipboard: ", err);
+                        console.error("ক্লিপবোর্ডে কপি করার সময় ত্রুটি: ", err);
                     }});
                 }}
             </script>
-            <button onclick="copyToClipboard(`{processed_passage.replace('`', '\\`')}`)">Copy to Clipboard</button>
+            <button onclick="copyToClipboard(`{editable_passage.replace('`', '\\`')}`)">কপি করুন</button>
             """
             st.markdown(copy_code, unsafe_allow_html=True)
 
             # Analytics
-            st.subheader("Analytics")
+            st.subheader("বিশ্লেষণ")
             total_words = len(passage.split())
             match_count = len(matches)
-            st.write(f"**Total words in passage:** {total_words}")
-            st.write(f"**Number of matches found in dictionary:** {match_count}")
+            st.write(f"**প্যাসেজের মোট শব্দ সংখ্যা:** {total_words}")
+            st.write(f"**ডিকশনারি থেকে মিলে যাওয়া শব্দ সংখ্যা:** {match_count}")
             if match_count > 0:
-                st.write("**Matched Words:**")
+                st.write("**মিল পাওয়া শব্দসমূহ:**")
                 st.write(", ".join(matches))
 
 if __name__ == "__main__":
