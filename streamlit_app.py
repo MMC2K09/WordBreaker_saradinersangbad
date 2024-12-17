@@ -51,20 +51,29 @@ def main():
             # Process the passage
             processed_passage, matches = process_passage(passage, dictionary, insert_char)
 
-            # Analytics
-            total_words = len(passage.split())
-            match_count = len(matches)
-
-            # Display results
+            # Display processed passage
             st.subheader("Processed Passage")
-            st.code(processed_passage, language="text")  # Display processed passage
+            st.code(processed_passage, language="text")
 
             # Copy button
-            st.caption("Click the button below to copy the processed passage:")
-            st.text_area("Copy Processed Passage", processed_passage)
+            copy_code = f"""
+            <script>
+                function copyToClipboard(text) {{
+                    navigator.clipboard.writeText(text).then(function() {{
+                        alert("Copied to clipboard!");
+                    }}, function(err) {{
+                        console.error("Could not copy text: ", err);
+                    }});
+                }}
+            </script>
+            <button onclick="copyToClipboard(`{processed_passage}`)">Copy to Clipboard</button>
+            """
+            st.markdown(copy_code, unsafe_allow_html=True)
 
             # Analytics
             st.subheader("Analytics")
+            total_words = len(passage.split())
+            match_count = len(matches)
             st.write(f"**Total words in passage:** {total_words}")
             st.write(f"**Number of matches found in dictionary:** {match_count}")
             if match_count > 0:
