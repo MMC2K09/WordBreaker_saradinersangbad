@@ -1,5 +1,15 @@
 import streamlit as st
 
+def load_dictionary(file_path):
+    """Load dictionary words from a text file."""
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            words = file.read().splitlines()
+        return set(words)  # Convert to a set for faster lookups
+    except FileNotFoundError:
+        st.error(f"Dictionary file '{file_path}' not found!")
+        return set()
+
 def insert_two_characters(word, insert_char):
     """Insert exactly 2 characters between letters of a word."""
     result = ""
@@ -24,14 +34,8 @@ def process_passage(passage, dictionary, insert_char):
 def main():
     st.title("বাংলা প্যাসেজ প্রক্রিয়াজাতকরণ অ্যাপ")
     
-    # Updated Offensive Bangla words dictionary
-    dictionary = {
-        "হত্যা", "মারা", "ইসরায়েল", "ইসরায়েলি", "সংঘর্ষ", "আগুন",
-        "নিহত", "আহত", "মৃত", "মৃত্যু", "ইসরায়েলের", "ইসরায়েলকে",
-        "ধ্বংস", "রক্ত", "সন্ত্রাস", "দাঙ্গা", "অপরাধ", "মামলা", 
-        "হামলা", "খুন", "ইসরায়েল,", "মামলার", "হত্যাকাণ্ডের", 
-        "হত্যাকাণ্ড", "হত্যাকাণ্ডে", "মামলায়"
-    }
+    # Load dictionary words from an external file
+    dictionary = load_dictionary("dictionary.txt")
 
     # User Inputs
     passage = st.text_area("বাংলা প্যাসেজ লিখুন:", height=150)
