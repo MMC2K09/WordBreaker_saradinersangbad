@@ -1,15 +1,11 @@
 import streamlit as st
 
-def load_dictionary(file_path):
-    """Load dictionary words from a text file."""
-    try:
-        with open(file_path, "r", encoding="utf-8") as file:
-            words = file.read().splitlines()
-        return set(words)  # Convert to a set for faster lookups
-    except FileNotFoundError:
-        st.error(f"Dictionary file '{file_path}' not found!")
-        return set()
+# Function to load dictionary words from an external file
+def load_dictionary(file_path="dictionary.txt"):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return set(line.strip() for line in file if line.strip())
 
+# Function to insert characters between letters of a word
 def insert_two_characters(word, insert_char):
     """Insert exactly 2 characters between letters of a word."""
     result = ""
@@ -21,57 +17,59 @@ def insert_two_characters(word, insert_char):
             insert_count += 1
     return result
 
+# Function to process the passage
 def process_passage(passage, dictionary, insert_char):
     """Process the passage by inserting characters into dictionary words."""
     words = passage.split()
+    matches = [word for word in words if word in dictionary]
     processed_words = [
         insert_two_characters(word, insert_char) if word in dictionary else word
         for word in words
     ]
-    return " ".join(processed_words)
+    return " ".join(processed_words), matches
 
 # Streamlit App
 def main():
-    st.title("বাংলা প্যাসেজ প্রক্রিয়াজাতকরণ অ্যাপ")
-    
-    # Load dictionary words from an external file
-    dictionary = load_dictionary("dictionary.txt")
+    st.title("Passage Processor with Analytics")
+    st.write("Insert characters into dictionary words and analyze your input!")
 
-    # User Inputs
-    passage = st.text_area("বাংলা প্যাসেজ লিখুন:", height=150)
-    insert_char = st.text_input("অক্ষরের মাঝে যুক্ত করার ক্যারেক্টার লিখুন:")
+    # Load the dictionary
+    dictionary = load_dictionary()
 
-    if st.button("প্রক্রিয়াজাত করুন"):
-        if passage and insert_char:
-            # Process the passage
-            processed_passage = process_passage(passage, dictionary, insert_char)
+    # User input for the passage
+    passage = st.text_area("Enter your Bangla passage:")
 
-            # Display result
-            st.success("প্রক্রিয়াজাত প্যাসেজ:")
-            st.write(processed_passage)
+    # User input for the character to insert
+    insert_char = st.text_input("Character to insert between letters:")
 
-            # Add Copy Button (HTML + JS)
-            st.components.v1.html(
-                f"""
-                <div>
-                    <textarea id="copyText" style="display:none;">{processed_passage}</textarea>
-                    <button onclick="copyToClipboard()">Copy Processed Passage</button>
-                </div>
-                <script>
-                    function copyToClipboard() {{
-                        var copyText = document.getElementById("copyText");
-                        copyText.style.display = "block";
-                        copyText.select();
-                        document.execCommand("copy");
-                        copyText.style.display = "none";
-                        alert("Processed passage copied to clipboard!");
-                    }}
-                </script>
-                """,
-                height=50,
-            )
+    if st.button("Process Passage"):
+        if not passage.strip():
+            st.warning("Please enter a passage.")
+        elif not insert_char.strip():
+            st.warning("Please enter a character to insert.")
         else:
-            st.error("দয়া করে একটি প্যাসেজ এবং ক্যারেক্টার প্রদান করুন!")
+            # Process the passage
+            processed_passage, matches = process_passage(passage, dictionary, insert_char)
+
+            # Analytics
+            total_words = len(passage.split())
+            match_count = len(matches)
+
+            # Display results
+            st.subheader("Processed Passage")
+            st.code(processed_passage, language="text")  # Display processed passage
+
+            # Copy button
+            st.caption("Click the button below to copy the processed passage:")
+            st.text_area("Copy Processed Passage", processed_passage)
+
+            # Analytics
+            st.subheader("Analytics")
+            st.write(f"**Total words in passage:** {total_words}")
+            st.write(f"**Number of matches found in dictionary:** {match_count}")
+            if match_count > 0:
+                st.write("**Matched Words:**")
+                st.write(", ".join(matches))
 
 if __name__ == "__main__":
     main()
