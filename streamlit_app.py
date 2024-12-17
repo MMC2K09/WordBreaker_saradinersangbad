@@ -55,18 +55,19 @@ def main():
             st.subheader("Processed Passage")
             st.code(processed_passage, language="text")
 
-            # Copy button
+            # Copy button (Fixed)
+            st.caption("Click the button below to copy the processed passage:")
             copy_code = f"""
             <script>
                 function copyToClipboard(text) {{
-                    navigator.clipboard.writeText(text).then(function() {{
+                    navigator.clipboard.writeText(text).then(() => {{
                         alert("Copied to clipboard!");
-                    }}, function(err) {{
-                        console.error("Could not copy text: ", err);
+                    }}).catch(err => {{
+                        console.error("Error copying to clipboard: ", err);
                     }});
                 }}
             </script>
-            <button onclick="copyToClipboard(`{processed_passage}`)">Copy to Clipboard</button>
+            <button onclick="copyToClipboard(`{processed_passage.replace('`', '\\`')}`)">Copy to Clipboard</button>
             """
             st.markdown(copy_code, unsafe_allow_html=True)
 
