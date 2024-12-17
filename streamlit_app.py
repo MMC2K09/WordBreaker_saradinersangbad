@@ -24,11 +24,13 @@ def process_passage(passage, dictionary, insert_char):
 def main():
     st.title("বাংলা প্যাসেজ প্রক্রিয়াজাতকরণ অ্যাপ")
     
-    # Offensive Bangla words dictionary (using a set for faster lookup)
+    # Updated Offensive Bangla words dictionary
     dictionary = {
         "হত্যা", "মারা", "ইসরায়েল", "ইসরায়েলি", "সংঘর্ষ", "আগুন",
         "নিহত", "আহত", "মৃত", "মৃত্যু", "ইসরায়েলের", "ইসরায়েলকে",
-        "ধ্বংস", "রক্ত", "সন্ত্রাস", "দাঙ্গা", "অপরাধ","মামলা", "হামলা", "খুন","ইসরায়েল,"
+        "ধ্বংস", "রক্ত", "সন্ত্রাস", "দাঙ্গা", "অপরাধ", "মামলা", 
+        "হামলা", "খুন", "ইসরায়েল,", "মামলার", "হত্যাকাণ্ডের", 
+        "হত্যাকাণ্ড", "হত্যাকাণ্ডে", "মামলায়"
     }
 
     # User Inputs
