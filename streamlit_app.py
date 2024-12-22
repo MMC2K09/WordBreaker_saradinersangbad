@@ -70,21 +70,21 @@ def main():
                                             value=processed_passage, height=200)
 
             # Add a working copy button
-            st.markdown("""
+            st.markdown(f"""
             <script>
-            function copyToClipboard() {
+            function copyToClipboard() {{
                 const text = document.getElementById("processed-text").value;
-                navigator.clipboard.writeText(text).then(() => {
+                navigator.clipboard.writeText(text).then(() => {{
                     alert("ক্লিপবোর্ডে কপি করা হয়েছে!");
-                }).catch(err => {
+                }}).catch(err => {{
                     alert("কপি করতে ব্যর্থ হয়েছে!");
                     console.error("Clipboard error: ", err);
-                });
-            }
+                }});
+            }}
             </script>
-            <textarea id="processed-text" style="display:none;">{}</textarea>
+            <textarea id="processed-text" style="display:none;">{editable_passage}</textarea>
             <button onclick="copyToClipboard()">কপি করুন</button>
-            """.format(editable_passage), unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
             # Analytics
             st.subheader("বিশ্লেষণ")
