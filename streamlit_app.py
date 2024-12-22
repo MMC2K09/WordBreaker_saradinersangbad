@@ -69,8 +69,22 @@ def main():
             editable_passage = st.text_area("এখানে প্রক্রিয়াজাত প্যাসেজ দেখুন এবং সম্পাদনা করুন:", 
                                             value=processed_passage, height=200)
 
-            # Add a copy button
-            st.button("কপি করুন", on_click=st.session_state.__setitem__, args=("to_copy", editable_passage))
+            # Add a working copy button
+            st.markdown("""
+            <script>
+            function copyToClipboard() {
+                const text = document.getElementById("processed-text").value;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("ক্লিপবোর্ডে কপি করা হয়েছে!");
+                }).catch(err => {
+                    alert("কপি করতে ব্যর্থ হয়েছে!");
+                    console.error("Clipboard error: ", err);
+                });
+            }
+            </script>
+            <textarea id="processed-text" style="display:none;">{}</textarea>
+            <button onclick="copyToClipboard()">কপি করুন</button>
+            """.format(editable_passage), unsafe_allow_html=True)
 
             # Analytics
             st.subheader("বিশ্লেষণ")
