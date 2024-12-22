@@ -5,6 +5,13 @@ def load_dictionary(file_path="dictionary.txt"):
     with open(file_path, "r", encoding="utf-8") as file:
         return set(line.strip() for line in file if line.strip())
 
+# Function to check if a word matches or starts with any dictionary word
+def is_matching(word, dictionary):
+    for dict_word in dictionary:
+        if word.startswith(dict_word):  # Check if the word starts with any dictionary word
+            return True, dict_word
+    return False, None
+
 # Function to insert characters between letters of a word
 def insert_two_characters(word, insert_char):
     """Insert exactly 2 characters between letters of a word."""
@@ -21,11 +28,17 @@ def insert_two_characters(word, insert_char):
 def process_passage(passage, dictionary, insert_char):
     """Process the passage by inserting characters into dictionary words."""
     words = passage.split()
-    matches = [word for word in words if word in dictionary]
-    processed_words = [
-        insert_two_characters(word, insert_char) if word in dictionary else word
-        for word in words
-    ]
+    matches = []
+    processed_words = []
+
+    for word in words:
+        match_found, matched_word = is_matching(word, dictionary)
+        if match_found:
+            matches.append(matched_word)
+            processed_words.append(insert_two_characters(word, insert_char))
+        else:
+            processed_words.append(word)
+
     return " ".join(processed_words), matches
 
 # Streamlit App
@@ -56,21 +69,8 @@ def main():
             editable_passage = st.text_area("এখানে প্রক্রিয়াজাত প্যাসেজ দেখুন এবং সম্পাদনা করুন:", 
                                             value=processed_passage, height=200)
 
-            # Copy button
-            st.caption("নিচের বোতামে ক্লিক করে প্রক্রিয়াজাত প্যাসেজ কপি করুন:")
-            copy_code = f"""
-            <script>
-                function copyToClipboard(text) {{
-                    navigator.clipboard.writeText(text).then(() => {{
-                        alert("ক্লিপবোর্ডে কপি করা হয়েছে!");
-                    }}).catch(err => {{
-                        console.error("ক্লিপবোর্ডে কপি করার সময় ত্রুটি: ", err);
-                    }});
-                }}
-            </script>
-            <button onclick="copyToClipboard(`{editable_passage.replace('`', '\\`')}`)">কপি করুন</button>
-            """
-            st.markdown(copy_code, unsafe_allow_html=True)
+            # Add a copy button
+            st.button("কপি করুন", on_click=st.session_state.__setitem__, args=("to_copy", editable_passage))
 
             # Analytics
             st.subheader("বিশ্লেষণ")
